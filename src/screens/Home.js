@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { ListView, View, StyleSheet } from 'react-native';
 import { Container, Header, Content, Button, Icon, List, ListItem, Text, Body, Title } from 'native-base';
 const datas = [
-  { qtd: 2, name: 'Água da Pedra' },
+  { qtd: 20, name: 'Água da Pedra' },
   { qtd: 15, name: 'Fruki Citrus (Lata)' },
   { qtd: 10, name: 'Fruki Cola (Lata)' },
   { qtd: 5, name: 'Frukito Laranja' },
@@ -22,6 +22,17 @@ export default class Home extends Component {
     newData.splice(rowId, 1);
     this.setState({ listViewData: newData });
   }
+  add (rowId) {
+    const newData = [...this.state.listViewData]
+    newData[rowId].qtd += 1
+    this.setState({ listViewData: newData })
+  }  
+ 
+  decrement (rowId) {
+    const newData = [...this.state.listViewData]
+    newData[rowId].qtd -= 1
+    this.setState({ listViewData: newData })
+  }
   render () {
     const ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
     return (
@@ -31,20 +42,20 @@ export default class Home extends Component {
             <Title>O Que há na geladeira?</Title>
           </Body>
         </Header>
-        <Content> 
+        <Content>
           <List
             dataSource={this.ds.cloneWithRows(this.state.listViewData)}
             renderRow={data =>
               <ListItem>
                 <Text style={styles.textQtd}> {data.qtd}</Text>
                 <Text style={styles.textName}> {data.name} </Text>
-              </ListItem>} 
-            renderLeftHiddenRow={data =>
+              </ListItem>}
+            renderLeftHiddenRow={(data, secId, rowId, rowMap) =>
               <View style={{ flexDirection: 'row' }}>
-                <Button full onPress={() => alert(data)}>
+                <Button full onPress={() => this.decrement(rowId)}>
                   <Icon active name="remove-circle" />
                 </Button>
-                <Button full onPress={() => alert(data)}>
+                <Button full onPress={() => this.add(rowId)}>
                   <Icon active name="add-circle" />
                 </Button>
               </View>}
